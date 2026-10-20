@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Palavra em 6</title>
+    <meta
+      name="description"
+      content="Jogo casual de adivinhação de palavras para estudantes em português."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app" aria-label="Jogo de adivinhação de palavras">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Jogo casual</p>
+          <h1>Palavra em 6</h1>
+        </div>
+        <button id="new-game" class="ghost-button" type="button">Nova partida</button>
+      </header>
+
+      <section class="status-panel" aria-label="Informações da partida">
+        <div class="meta-box">
+          <span class="meta-label">Tema</span>
+          <strong id="category">Carregando...</strong>
+        </div>
+        <div class="meta-box">
+          <span class="meta-label">Dica</span>
+          <strong id="hint">Carregando...</strong>
+        </div>
+        <div class="meta-box stats-box">
+          <span class="meta-label">Estatísticas</span>
+          <strong id="stats">0 vitórias</strong>
+        </div>
+      </section>
+
+      <section class="board-wrap" aria-label="Grade do jogo">
+        <div id="board" class="board" aria-live="polite"></div>
+      </section>
+
+      <section class="message-area" aria-live="polite" aria-atomic="true">
+        <div id="status-message" class="status-message" role="status">
+          Adivinhe a palavra em até 6 tentativas com 6 letras.
+        </div>
+      </section>
+
+      <section class="keyboard-panel" aria-label="Teclado virtual">
+        <div id="keyboard" class="keyboard" aria-live="off"></div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

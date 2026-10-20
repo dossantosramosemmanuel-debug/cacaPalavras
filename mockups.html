@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel de protótipos — Jogo de adivinhação</title>
+    <style>
+      :root {
+        --bg: #f4efe7;
+        --panel: #fffdf9;
+        --ink: #17212b;
+        --muted: #66707b;
+        --line: #d8d0c5;
+        --green: #4d8d6a;
+        --yellow: #d9a93a;
+        --gray: #b5b1ab;
+        --shadow: 0 16px 40px rgba(20, 17, 15, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, Arial, sans-serif;
+        background: linear-gradient(180deg, #f4efe7 0%, #efe7db 100%);
+        color: var(--ink);
+      }
+
+      .page {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 36px 22px 64px;
+      }
+
+      .header {
+        margin-bottom: 24px;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #efe3d5;
+        color: #6e4c2a;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 14px 0 10px;
+        font-size: clamp(2rem, 3vw, 3.2rem);
+        line-height: 1.1;
+      }
+
+      .subtitle {
+        max-width: 980px;
+        color: var(--muted);
+        font-size: 1.03rem;
+        margin: 0;
+      }
+
+      .agents {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+        gap: 18px;
+        margin: 28px 0 30px;
+      }
+
+      .agent {
+        background: rgba(255,255,255,0.54);
+        border: 1px solid rgba(23, 33, 43, 0.08);
+        border-radius: 16px;
+        padding: 16px 18px;
+        box-shadow: var(--shadow);
+      }
+
+      .agent-tag {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #4d5966;
+      }
+
+      .agent h2 {
+        margin: 8px 0 6px;
+        font-size: 1.2rem;
+      }
+
+      .agent p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 0.96rem;
+      }
+
+      .mockups {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(260px, 1fr));
+        gap: 22px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid rgba(23, 33, 43, 0.08);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .prototype-header {
+        padding: 18px 18px 14px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(255,255,255,0.3);
+      }
+
+      .prototype-header h3 {
+        margin: 0;
+        font-size: 1.25rem;
+      }
+
+      .prototype-header p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .mockup-body {
+        padding: 18px;
+      }
+
+      .mini-game {
+        border-radius: 18px;
+        padding: 12px 12px 16px;
+        border: 1px solid var(--line);
+      }
+
+      .wordle-mini {
+        background: #f9f6f1;
+      }
+
+      .forca-mini {
+        background: linear-gradient(180deg, #f4f7f3 0%, #edf1ed 100%);
+      }
+
+      .missao-mini {
+        background: linear-gradient(180deg, #f8f3ea 0%, #efe4d0 100%);
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        background: rgba(255,255,255,0.7);
+        border: 1px solid var(--line);
+      }
+
+      .hint {
+        color: #5e6871;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 8px;
+        margin: 12px 0;
+      }
+
+      .cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 42px;
+        border-radius: 10px;
+        border: 1px solid #c9c1b8;
+        background: #fcfbf9;
+        font-weight: 800;
+        font-size: 1.15rem;
+      }
+
+      .cell.green { background: #dff5e9; border-color: #7db096; color: #1b5a3f; }
+      .cell.yellow { background: #f7ebc8; border-color: #d9a93a; color: #7f5300; }
+      .cell.gray { background: #ece9e5; border-color: #b8b1a9; color: #4d5966; }
+
+      .keyboard {
+        display: grid;
+        grid-template-columns: repeat(10, minmax(0, 1fr));
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .key {
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 800;
+        background: #f2efe9;
+        border: 1px solid #d8d2ca;
+      }
+
+      .key.green { background: #dff5e9; border-color: #7db096; }
+      .key.yellow { background: #f7ebc8; border-color: #d9a93a; }
+      .key.gray { background: #ece9e5; border-color: #b8b1a9; }
+
+      .word-guess {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 10px 0 8px;
+      }
+
+      .word-slot {
+        display: inline-flex;
+        width: 28px;
+        height: 30px;
+        background: rgba(255,255,255,0.7);
+        border: 1px solid #d5d9d0;
+        border-radius: 8px;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+      }
+
+      .lives {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .life {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #d9e0d7;
+        border: 1px solid #bac3b1;
+      }
+      .life.used { background: #e9b7b1; border-color: #c25d4a; }
+
+      .cards-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .mini-card {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(255,255,255,0.6);
+        padding: 10px;
+        min-height: 60px;
+      }
+
+      .mini-card .label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #5d6974;
+        font-weight: 800;
+      }
+
+      .mini-card .value {
+        margin-top: 8px;
+        font-weight: 800;
+      }
+
+      .button-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .pill {
+        flex: 1;
+        height: 32px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #f4f0ea;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .pill.accent {
+        background: #1e2c36;
+        color: white;
+        border-color: #1e2c36;
+      }
+
+      @media (max-width: 1080px) {
+        .agents, .mockups {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <span class="eyebrow">Painel de agentes</span>
+        <h1>3 protótipos de interface para o jogo de adivinhação de palavras</h1>
+        <p class="subtitle">
+          Coordenação de especialistas em UX, acessibilidade web e design visual com foco em web, público de estudantes,
+          mecânica híbrida inspirada em Wordle + Hangman e estilo retrô.
+        </p>
+      </header>
+
+      <section class="agents" aria-label="Agentes especialistas">
+        <article class="agent">
+          <div class="agent-tag">UX design</div>
+          <h2>Flávia / Jornada</h2>
+          <p>Foca em clareza de regra, microcopy e fluxo rápido para que o jogador entenda o jogo em segundos.</p>
+        </article>
+        <article class="agent">
+          <div class="agent-tag">Acessibilidade</div>
+          <h2>Mateus / Inclusão</h2>
+          <p>Valida contraste, foco visível, navegação por teclado, semântica e experiências para públicos diversos.</p>
+        </article>
+        <article class="agent">
+          <div class="agent-tag">Design visual</div>
+          <h2>Renata / Estética</h2>
+          <p>Define a identidade visual, paleta, tipografia e estados de feedback para diferenciar cada conceito.</p>
+        </article>
+      </section>
+
+      <section class="mockups" aria-label="Protótipos de interface">
+        <article class="card">
+          <div class="prototype-header">
+            <h3>1. Palavra em 6</h3>
+            <p>Minimalista e direto, inspirando Wordle.</p>
+          </div>
+          <div class="mockup-body">
+            <div class="mini-game wordle-mini">
+              <div class="topbar">
+                <span class="chip">Desafio</span>
+                <span class="hint">5 letras</span>
+              </div>
+              <div class="grid" aria-label="Grade de tentativas">
+                <div class="cell green">A</div>
+                <div class="cell yellow">N</div>
+                <div class="cell gray">I</div>
+                <div class="cell">M</div>
+                <div class="cell">A</div>
+                <div class="cell">M</div>
+                <div class="cell green">A</div>
+                <div class="cell">L</div>
+                <div class="cell yellow">H</div>
+                <div class="cell">A</div>
+                <div class="cell">P</div>
+                <div class="cell gray">A</div>
+                <div class="cell">R</div>
+                <div class="cell">A</div>
+                <div class="cell">N</div>
+                <div class="cell">A</div>
+                <div class="cell green">N</div>
+                <div class="cell">O</div>
+                <div class="cell yellow">S</div>
+                <div class="cell">A</div>
+                <div class="cell yellow">C</div>
+                <div class="cell gray">L</div>
+                <div class="cell">E</div>
+                <div class="cell">T</div>
+                <div class="cell">A</div>
+                <div class="cell green">F</div>
+                <div class="cell green">L</div>
+                <div class="cell">A</div>
+                <div class="cell">T</div>
+                <div class="cell">A</div>
+              </div>
+              <div class="keyboard" aria-label="Teclado virtual">
+                <div class="key green">A</div><div class="key yellow">E</div><div class="key">I</div><div class="key">O</div><div class="key">U</div><div class="key">L</div><div class="key gray">M</div><div class="key">N</div><div class="key">S</div><div class="key">T</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="prototype-header">
+            <h3>2. Desvende a Palavra</h3>
+            <p>Mais familiar, com sensação de risco sem a violência visual.</p>
+          </div>
+          <div class="mockup-body">
+            <div class="mini-game forca-mini">
+              <div class="topbar">
+                <span class="chip">Animais</span>
+                <span class="hint">6 chances</span>
+              </div>
+              <div class="word-guess" aria-label="Palavra oculta">
+                <span class="word-slot">_</span>
+                <span class="word-slot">_</span>
+                <span class="word-slot">_</span>
+                <span class="word-slot">B</span>
+                <span class="word-slot">_</span>
+                <span class="word-slot">_</span>
+                <span class="word-slot">_</span>
+              </div>
+              <div class="cards-row">
+                <div class="mini-card">
+                  <div class="label">Dica</div>
+                  <div class="value">Tem asas</div>
+                </div>
+                <div class="mini-card">
+                  <div class="label">Tentadas</div>
+                  <div class="value">A, E, O</div>
+                </div>
+              </div>
+              <div class="lives" aria-label="Vidas restantes">
+                <span class="life"></span>
+                <span class="life"></span>
+                <span class="life"></span>
+                <span class="life"></span>
+                <span class="life used"></span>
+                <span class="life used"></span>
+              </div>
+              <div class="button-row">
+                <span class="pill">Tentar letra</span>
+                <span class="pill accent">Palavra inteira</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="prototype-header">
+            <h3>3. Missão Vocabulário</h3>
+            <p>Híbrido com aprendizagem leve e apoio de contexto.</p>
+          </div>
+          <div class="mockup-body">
+            <div class="mini-game missao-mini">
+              <div class="topbar">
+                <span class="chip">Missão 02</span>
+                <span class="hint">Ritmo: 2/5</span>
+              </div>
+              <div class="cards-row">
+                <div class="mini-card">
+                  <div class="label">Tema</div>
+                  <div class="value">Escola</div>
+                </div>
+                <div class="mini-card">
+                  <div class="label">Pista</div>
+                  <div class="value">Lugar de estudo</div>
+                </div>
+              </div>
+              <div class="grid" style="margin-top: 14px;">
+                <div class="cell">_</div>
+                <div class="cell">_</div>
+                <div class="cell">_</div>
+                <div class="cell green">O</div>
+                <div class="cell">_</div>
+              </div>
+              <div class="keyboard" aria-label="Teclado de missão">
+                <div class="key">A</div><div class="key green">E</div><div class="key gray">I</div><div class="key">O</div><div class="key">U</div><div class="key">L</div><div class="key">R</div><div class="key">C</div><div class="key">M</div><div class="key">S</div>
+              </div>
+              <div class="button-row">
+                <span class="pill">Ver exemplo</span>
+                <span class="pill accent">Enviar</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </div>
+  </body>
+</html>
